@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+<div id="svgCont">
+</div>
+
+<script>
+  var oSvg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  oSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  oSvg.setAttribute('width', '500');
+  oSvg.setAttribute('height', '500');
+  oSvg.setAttribute('style', 'border:1px solid #000');
+
+  var scale = document.createElementNS('http://www.w3.org/2000/svg','path');
+  scale.setAttribute('stroke-width', '2');
+  scale.setAttribute('stroke', '#000');
+  scale.setAttribute('d', 'M0,0 L200,0 M20,0 L20,5 M40,0 L40,10 M60,0 L60,5 M80,0 L80,10 M100,0 L100,5 M120,0 L120,10 M140,0 L140,5 M160,0 L160,10 M180,0 L180,5 M200,0 L200,10');
+
+  var a = scale.cloneNode(true);
+  a.setAttribute('transform', 'translate(250 250) rotate(-90)');
+  oSvg.appendChild(a);
+
+  var b = scale.cloneNode(true);
+  b.setAttribute('transform', 'translate(250 250) rotate(-18)');
+  oSvg.appendChild(b);
+
+  var c = scale.cloneNode(true);
+  c.setAttribute('transform', 'translate(250 250) rotate(54)');
+  oSvg.appendChild(c);
+
+  var d = scale.cloneNode(true);
+  d.setAttribute('transform', 'translate(250 250) rotate(126)');
+  oSvg.appendChild(d);
+
+  var e = scale.cloneNode(true);
+  e.setAttribute('transform', 'translate(250 250) rotate(198)');
+  oSvg.appendChild(e);
+
+  var info = document.createElementNS('http://www.w3.org/2000/svg','path');
+  info.setAttribute('stroke-width', '2');
+  info.setAttribute('stroke', '#F00');
+  info.setAttribute('fill', 'none');
+  info.setAttribute('d',' M' + 1 * 40 * Math.sin(  0/180 * Math.PI) + ',' + 1 * -40 * Math.cos(  0/180 * Math.PI) +
+                        ' L' + 2 * 40 * Math.sin( 72/180 * Math.PI) + ',' + 2 * -40 * Math.cos( 72/180 * Math.PI) +
+                        ' L' + 3 * 40 * Math.sin(144/180 * Math.PI) + ',' + 3 * -40 * Math.cos(144/180 * Math.PI) +
+                        ' L' + 4 * 40 * Math.sin(216/180 * Math.PI) + ',' + 4 * -40 * Math.cos(216/180 * Math.PI) +
+                        ' L' + 5 * 40 * Math.sin(288/180 * Math.PI) + ',' + 5 * -40 * Math.cos(288/180 * Math.PI) + 'z');
+
+  info.setAttribute('transform', 'translate(250 250)');
+  oSvg.appendChild(info);
+
+    document.getElementById('svgCont').appendChild(oSvg)
+
+</script>
+
+</body>
+</html>
