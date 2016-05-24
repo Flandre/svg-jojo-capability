@@ -5,10 +5,16 @@
   <title></title>
 </head>
 <body>
+<div id="contrl"></div>
 <div id="svgCont">
 </div>
 
 <script>
+  var testText = '肝度,卖弱,安利,撞壁,素质';
+  //处理输入数据
+  var infoArr = testText.split(',');
+  console.log(infoArr);
+
   var oSvg = document.createElementNS('http://www.w3.org/2000/svg','svg');
   oSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
   oSvg.setAttribute('width', '500');
@@ -52,6 +58,11 @@
 
   info.setAttribute('transform', 'translate(250 250)');
   oSvg.appendChild(info);
+
+  var fillOpacity = info.cloneNode(true);
+  fillOpacity.setAttribute('fill', '#F00');
+  fillOpacity.setAttribute('style', 'opacity:0.3');
+  oSvg.appendChild(fillOpacity);
 
   document.getElementById('svgCont').appendChild(oSvg)
 

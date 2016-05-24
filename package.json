@@ -1,0 +1,16 @@
+{
+  "name": "svg-jojo-capability",
+  "version": "1.0.0",
+  "description": "OLAOLAOLAOLAOLAOLA",
+  "author": "Flandre",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.7.0",
+    "grunt-contrib-connect": "^0.11.2",
+    "grunt-contrib-copy": "^0.8.2"
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "jquery": "^2.2.3"
+  }
+}
