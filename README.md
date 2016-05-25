@@ -1,3 +1,3 @@
 # svg-jojo-capability
 
-###[Test](http://flandre.github.io/svg-jojo-capability/){:target='_blank'}
+###[Test](http://flandre.github.io/svg-jojo-capability/)
