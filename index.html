@@ -6,12 +6,12 @@
   <link href="dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-<div id="control" style="padding-top:30px;">
+<div id="control" class="container" style="padding-top:30px;">
   <div class="form-horizontal">
     <div class="form-group">
       <label for="inputInfo" class="col-sm-2 control-label">关键词</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputInfo" placeholder="请输入关键词，关键词之间用英文逗号 ( , ) 隔开">
+        <input type="text" class="form-control" id="inputInfo" placeholder="请输入3组以上关键词，关键词之间用英文逗号 ( , ) 隔开">
       </div>
     </div>
     <div class="form-group">
@@ -26,126 +26,134 @@
 
 <script>
   document.getElementById('createSvg').onclick = function(){
-
     var testText = '肝度,卖弱,安利,撞壁,素质';
     //处理输入数据
-    //var infoArr = testText.split(',');
-    var infoArr = document.getElementById('inputInfo').value.split(',');
+    var infoArr = testText.split(',');
+    //var infoArr = document.getElementById('inputInfo').value.split(',');
+    if(infoArr.length < 3){
+      alert('输入数据有误，请重新输入')
+    }else{
+      //创建bootstrap表单
+      var oCtrl = document.getElementById('control');
+      oCtrl.innerHTML = '';
 
-    //创建bootstrap表单
-    var oCtrl = document.getElementById('control');
-    oCtrl.innerHTML = '';
-    oCtrl.className = 'container';
+      var oForm = document.createElement('div');
+      oForm.className = 'form-horizontal';
 
-    var oForm = document.createElement('div');
-    oForm.className = 'form-horizontal';
-
-    for(var i = 0; i < infoArr.length; i++){
-      var formGroup = document.createElement('div'),
-          oLabel = document.createElement('label');
-          oInputBox = document.createElement('div');
+      for(var i = 0; i < infoArr.length; i++){
+        var formGroup = document.createElement('div'),
+          oLabel = document.createElement('label'),
+          oInputBox = document.createElement('div'),
           oInput = document.createElement('input');
 
-      formGroup.className = 'form-group';
-      oLabel.setAttribute('for', 'input' + i);
-      oLabel.setAttribute('class', 'col-sm-2 control-label');
-      oLabel.appendChild(document.createTextNode('' + infoArr[i]));
+        formGroup.className = 'form-group';
+        oLabel.setAttribute('for', 'input' + i);
+        oLabel.setAttribute('class', 'col-sm-2 control-label');
+        oLabel.appendChild(document.createTextNode('' + infoArr[i]));
 
-      oInputBox.setAttribute('class', 'col-sm-10');
-      oInput.setAttribute('type', 'text');
-      oInput.setAttribute('class', 'form-control');
-      oInput.setAttribute('id', 'input' + i);
-      oInput.setAttribute('placeholder', infoArr[i] + '数值');
+        oInputBox.setAttribute('class', 'col-sm-10');
+        oInput.setAttribute('type', 'text');
+        oInput.setAttribute('class', 'form-control');
+        oInput.setAttribute('id', 'input' + i);
+        oInput.setAttribute('placeholder', infoArr[i] + '数值');
 
-      oInputBox.appendChild(oInput);
-      formGroup.appendChild(oLabel);
-      formGroup.appendChild(oInputBox);
+        oInputBox.appendChild(oInput);
+        formGroup.appendChild(oLabel);
+        formGroup.appendChild(oInputBox);
 
-      oForm.appendChild(formGroup);
-    }
+        oForm.appendChild(formGroup);
+      }
 
-    var btnGroup = document.createElement('div'),
+      var btnGroup = document.createElement('div'),
         oBtnBox = document.createElement('div'),
         oBtn = document.createElement('button');
-    btnGroup.className = 'form-group';
-    oBtnBox.setAttribute('class', 'col-sm-offset-2 col-sm-10');
-    oBtn.setAttribute('class', 'btn btn-default');
+      btnGroup.className = 'form-group';
+      oBtnBox.setAttribute('class', 'col-sm-offset-2 col-sm-10');
+      oBtn.setAttribute('class', 'btn btn-default');
 
-    var oBtnCreate = oBtn.cloneNode(true);
-    oBtnCreate.setAttribute('id', 'createInfo');
-    oBtnCreate.appendChild(document.createTextNode('生成'));
+      var oBtnCreate = oBtn.cloneNode(true);
+      oBtnCreate.setAttribute('id', 'createInfo');
+      oBtnCreate.appendChild(document.createTextNode('生成'));
 
-    oBtnBox.appendChild(oBtnCreate);
-    btnGroup.appendChild(oBtnBox);
-    oForm.appendChild(btnGroup);
+      oBtnBox.appendChild(oBtnCreate);
+      btnGroup.appendChild(oBtnBox);
+      oForm.appendChild(btnGroup);
 
-    oCtrl.appendChild(oForm);
-    //创建svg
-    var oSvg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-    oSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    oSvg.setAttribute('width', '500');
-    oSvg.setAttribute('height', '500');
-    oSvg.setAttribute('style', 'border:1px solid #000');
+      oCtrl.appendChild(oForm);
+      //创建svg
+      var oSvg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      oSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      oSvg.setAttribute('width', '500');
+      oSvg.setAttribute('height', '500');
+      oSvg.setAttribute('style', 'border:1px solid #000');
 
-    //绘制刻度尺
-    var scale = document.createElementNS('http://www.w3.org/2000/svg','path');
-    scale.setAttribute('stroke-width', '2');
-    scale.setAttribute('stroke', '#000');
-    scale.setAttribute('d', 'M0,0 L200,0 M20,0 L20,5 M40,0 L40,10 M60,0 L60,5 M80,0 L80,10 M100,0 L100,5 M120,0 L120,10 M140,0 L140,5 M160,0 L160,10 M180,0 L180,5 M200,0 L200,10');
+      //绘制刻度尺
+      var scale = document.createElementNS('http://www.w3.org/2000/svg','path');
+      scale.setAttribute('stroke-width', '2');
+      scale.setAttribute('stroke', '#000');
+      scale.setAttribute('d', 'M0,0 L200,0 M20,0 L20,5 M40,0 L40,10 M60,0 L60,5 M80,0 L80,10 M100,0 L100,5 M120,0 L120,10 M140,0 L140,5 M160,0 L160,10 M180,0 L180,5 M200,0 L200,10');
 
-    //定位刻度
-    var svgScaleObjArr = new Array();
-    var svgScaleRotate = -90;
-    for(var i = 0; i < infoArr.length; i++){
-      svgScaleObjArr[i] = scale.cloneNode(true);
-      svgScaleObjArr[i].setAttribute('transform', 'translate(250 250) rotate(' + svgScaleRotate + ')');
-      oSvg.appendChild(svgScaleObjArr[i]);
-      svgScaleRotate += 360/infoArr.length;
-    }
-    document.getElementById('svgCont').appendChild(oSvg);
-
-    //生成信息
-    var dataArr = new Array();
-    document.getElementById('createInfo').onclick = function(){
-      dataArr = [];
+      //定位刻度
+      var svgScaleObjArr = [];
+      var svgScaleRotate = -90;
       for(var i = 0; i < infoArr.length; i++){
-        dataArr.push(document.getElementById('input' + i).value);
+        svgScaleObjArr[i] = scale.cloneNode(true);
+        svgScaleObjArr[i].setAttribute('transform', 'translate(250 250) rotate(' + svgScaleRotate + ')');
+        oSvg.appendChild(svgScaleObjArr[i]);
+        svgScaleRotate += 360/infoArr.length;
       }
-      //创建显示数据
-      var info = document.createElementNS('http://www.w3.org/2000/svg','path');
-      info.setAttribute('stroke-width', '2');
-      info.setAttribute('stroke', '#F00');
-      info.setAttribute('fill', 'none');
+      document.getElementById('svgCont').appendChild(oSvg);
 
-      var pathData = 'M';
-      var pathRotate = 0;
-      for(var i = 0; i < infoArr.length; i++){
-        if(i){
-          pathData += ' L'
+      //生成信息
+      var INFO_NUM = infoArr.length;
+      //var abilityCount = 1;
+      var dataArr = [];
+      document.getElementById('createInfo').onclick = function(){
+        //清空之前显示的数据
+        if(document.getElementsByTagName('path').length > INFO_NUM){
+          alert(INFO_NUM + ','+document.getElementsByTagName('path').length);
+          for(var i = document.getElementsByTagName('path').length - 1; i >= INFO_NUM ; i--){
+            oSvg.removeChild(document.getElementsByTagName('path')[i]);
+          }
         }
-        pathData += dataArr[i] * 40 * Math.sin(  pathRotate/180 * Math.PI);
-        pathData += ',';
-        pathData += dataArr[i] * -40 * Math.cos(  pathRotate/180 * Math.PI);
+        alert(1);
+        dataArr = [];
+        for(var i = 0; i < INFO_NUM; i++){
+          dataArr.push(document.getElementById('input' + i).value);
+        }
+        //创建显示数据
+        var info = document.createElementNS('http://www.w3.org/2000/svg','path');
+        info.setAttribute('stroke-width', '2');
+        info.setAttribute('stroke', '#F00');
+        info.setAttribute('fill', 'none');
 
-        pathRotate += 360 / infoArr.length;
-      }
-      pathData += 'z';
-      console.log(pathData);
-      info.setAttribute('d', pathData);
+        var pathData = 'M';
+        var pathRotate = 0;
+        for(var i = 0; i < INFO_NUM; i++){
+          if(i){
+            pathData += ' L'
+          }
+          pathData += dataArr[i] * 40 * Math.sin( pathRotate/180 * Math.PI );
+          pathData += ',';
+          pathData += dataArr[i] * -40 * Math.cos( pathRotate/180 * Math.PI );
 
-      info.setAttribute('transform', 'translate(250 250)');
-      oSvg.appendChild(info);
+          pathRotate += 360 / infoArr.length;
+        }
+        pathData += 'z';
+        console.log(pathData);
+        info.setAttribute('d', pathData);
 
-      var fillOpacity = info.cloneNode(true);
-      fillOpacity.setAttribute('fill', '#F00');
-      fillOpacity.setAttribute('style', 'opacity:0.3');
-      oSvg.appendChild(fillOpacity);
+        info.setAttribute('transform', 'translate(250 250)');
+        oSvg.appendChild(info);
 
-      document.getElementById('svgCont').appendChild(oSvg)
-    };
+        var fillOpacity = info.cloneNode(true);
+        fillOpacity.setAttribute('fill', '#F00');
+        fillOpacity.setAttribute('style', 'opacity:0.3');
+        oSvg.appendChild(fillOpacity);
 
-
-
+        document.getElementById('svgCont').appendChild(oSvg)
+      };
+    }
   };
 </script>
 
