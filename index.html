@@ -111,12 +111,10 @@
       document.getElementById('createInfo').onclick = function(){
         //清空之前显示的数据
         if(document.getElementsByTagName('path').length > INFO_NUM){
-          alert(INFO_NUM + ','+document.getElementsByTagName('path').length);
           for(var i = document.getElementsByTagName('path').length - 1; i >= INFO_NUM ; i--){
             oSvg.removeChild(document.getElementsByTagName('path')[i]);
           }
         }
-        alert(1);
         dataArr = [];
         for(var i = 0; i < INFO_NUM; i++){
           dataArr.push(document.getElementById('input' + i).value);
