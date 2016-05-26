@@ -28,8 +28,8 @@
   document.getElementById('createSvg').onclick = function(){
     var testText = '肝度,卖弱,安利,撞壁,素质';
     //处理输入数据
-    //var infoArr = testText.split(',');
-    var infoArr = document.getElementById('inputInfo').value.split(',');
+    var infoArr = testText.split(',');
+    //var infoArr = document.getElementById('inputInfo').value.split(',');
     if(infoArr.length < 3){
       alert('输入数据有误，请重新输入')
     }else{
@@ -106,15 +106,17 @@
 
       //生成信息
       var INFO_NUM = infoArr.length;
-      //var abilityCount = 1;
-      var dataArr = [];
+      var abilityCount = 1;
+      var dataArr;
       document.getElementById('createInfo').onclick = function(){
         //清空之前显示的数据
         if(document.getElementsByTagName('path').length > INFO_NUM){
+          //alert(INFO_NUM + ','+document.getElementsByTagName('path').length);
           for(var i = document.getElementsByTagName('path').length - 1; i >= INFO_NUM ; i--){
             oSvg.removeChild(document.getElementsByTagName('path')[i]);
           }
         }
+        //alert(1);
         dataArr = [];
         for(var i = 0; i < INFO_NUM; i++){
           dataArr.push(document.getElementById('input' + i).value);
