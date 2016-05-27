@@ -106,55 +106,70 @@
 
       //生成信息
       var INFO_NUM = infoArr.length;
-      var abilityCount = 1;
+      var abilityArr = [];
       var dataArr;
       document.getElementById('createInfo').onclick = function(){
         //清空之前显示的数据
-        if(document.getElementsByTagName('path').length > INFO_NUM){
-          //alert(INFO_NUM + ','+document.getElementsByTagName('path').length);
+        /*if(document.getElementsByTagName('path').length > INFO_NUM){
           for(var i = document.getElementsByTagName('path').length - 1; i >= INFO_NUM ; i--){
             oSvg.removeChild(document.getElementsByTagName('path')[i]);
           }
-        }
-        //alert(1);
+        }*/
         dataArr = [];
         for(var i = 0; i < INFO_NUM; i++){
           dataArr.push(document.getElementById('input' + i).value);
         }
         //创建显示数据
-        var info = document.createElementNS('http://www.w3.org/2000/svg','path');
-        info.setAttribute('stroke-width', '2');
-        info.setAttribute('stroke', '#F00');
-        info.setAttribute('fill', 'none');
-
-        var pathData = 'M';
-        var pathRotate = 0;
-        for(var i = 0; i < INFO_NUM; i++){
-          if(i){
-            pathData += ' L'
-          }
-          pathData += dataArr[i] * 40 * Math.sin( pathRotate/180 * Math.PI );
-          pathData += ',';
-          pathData += dataArr[i] * -40 * Math.cos( pathRotate/180 * Math.PI );
-
-          pathRotate += 360 / infoArr.length;
-        }
-        pathData += 'z';
-        console.log(pathData);
-        info.setAttribute('d', pathData);
-
-        info.setAttribute('transform', 'translate(250 250)');
-        oSvg.appendChild(info);
-
-        var fillOpacity = info.cloneNode(true);
-        fillOpacity.setAttribute('fill', '#F00');
-        fillOpacity.setAttribute('style', 'opacity:0.3');
-        oSvg.appendChild(fillOpacity);
+        drawData(oSvg, dataArr);
 
         document.getElementById('svgCont').appendChild(oSvg)
       };
     }
   };
+
+  //传入一个数组转换成path值
+  function dataToPath(dataArr){
+    var pathData = 'M';
+    var pathRotate = 0;
+    for(var i = 0; i < dataArr.length; i++){
+      if(i){
+        pathData += ' L'
+      }
+      pathData += dataArr[i] * 40 * Math.sin( pathRotate/180 * Math.PI );
+      pathData += ',';
+      pathData += dataArr[i] * -40 * Math.cos( pathRotate/180 * Math.PI );
+
+      pathRotate += 360 / dataArr.length;
+    }
+    pathData += 'z';
+
+    return pathData;
+  }
+
+  //创建数据显示
+  function drawData(svgObj, svgData){
+    var info = document.createElementNS('http://www.w3.org/2000/svg','path');
+    info.setAttribute('stroke-width', '2');
+    info.setAttribute('stroke', '#F00');
+    info.setAttribute('fill', 'none');
+
+    var pathData = dataToPath( svgData );
+    info.setAttribute('d', pathData);
+
+    info.setAttribute('transform', 'translate(250 250)');
+    svgObj.appendChild(info);
+
+    var fillOpacity = info.cloneNode(true);
+    fillOpacity.setAttribute('fill', '#F00');
+    fillOpacity.setAttribute('style', 'opacity:0.3');
+    svgObj.appendChild(fillOpacity);
+
+  }
+
+  //修改数据
+  function changeData(){
+
+  }
 </script>
 
 </body>
