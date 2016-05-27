@@ -110,13 +110,11 @@
       var dataArr;
       document.getElementById('createInfo').onclick = function(){
         //清空之前显示的数据
-        if(document.getElementsByTagName('path').length > INFO_NUM){
-          //alert(INFO_NUM + ','+document.getElementsByTagName('path').length);
+        /*if(document.getElementsByTagName('path').length > INFO_NUM){
           for(var i = document.getElementsByTagName('path').length - 1; i >= INFO_NUM ; i--){
             oSvg.removeChild(document.getElementsByTagName('path')[i]);
           }
-        }
-        //alert(1);
+        }*/
         dataArr = [];
         for(var i = 0; i < INFO_NUM; i++){
           dataArr.push(document.getElementById('input' + i).value);
@@ -127,20 +125,7 @@
         info.setAttribute('stroke', '#F00');
         info.setAttribute('fill', 'none');
 
-        var pathData = 'M';
-        var pathRotate = 0;
-        for(var i = 0; i < INFO_NUM; i++){
-          if(i){
-            pathData += ' L'
-          }
-          pathData += dataArr[i] * 40 * Math.sin( pathRotate/180 * Math.PI );
-          pathData += ',';
-          pathData += dataArr[i] * -40 * Math.cos( pathRotate/180 * Math.PI );
-
-          pathRotate += 360 / infoArr.length;
-        }
-        pathData += 'z';
-        console.log(pathData);
+        var pathData = dataToPath( dataArr );
         info.setAttribute('d', pathData);
 
         info.setAttribute('transform', 'translate(250 250)');
@@ -155,6 +140,25 @@
       };
     }
   };
+
+  //传入一个数组转换成path值
+  function dataToPath(dataArr){
+    var pathData = 'M';
+    var pathRotate = 0;
+    for(var i = 0; i < dataArr.length; i++){
+      if(i){
+        pathData += ' L'
+      }
+      pathData += dataArr[i] * 40 * Math.sin( pathRotate/180 * Math.PI );
+      pathData += ',';
+      pathData += dataArr[i] * -40 * Math.cos( pathRotate/180 * Math.PI );
+
+      pathRotate += 360 / dataArr.length;
+    }
+    pathData += 'z';
+
+    return pathData;
+  }
 </script>
 
 </body>
