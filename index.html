@@ -121,13 +121,22 @@
           }
         }*/
         dataArr = [];
+        //输入判断
+        var isNum = 0;
         for(var i = 0; i < INFO_NUM; i++){
-          dataArr.push(document.getElementById('input' + i).value);
+          if(Number(document.getElementById('input' + i).value)){
+            dataArr.push(document.getElementById('input' + i).value);
+          }else{
+            isNum ++;
+          }
         }
         //创建显示数据
-        drawData(oSvg, dataArr);
+        if(isNum){
+          alert('请输入正确的数字');
+        }else{
+          drawData(oSvg, dataArr);
+        }
 
-        document.getElementById('svgCont').appendChild(oSvg)
       }
     }
   };
