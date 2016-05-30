@@ -68,14 +68,19 @@
         oBtnBox = document.createElement('div'),
         oBtn = document.createElement('button');
       btnGroup.className = 'form-group';
-      oBtnBox.setAttribute('class', 'col-sm-offset-2 col-sm-10');
+      oBtnBox.setAttribute('class', 'col-sm-offset-2 col-sm-10 row');
       oBtn.setAttribute('class', 'btn btn-default');
 
       var oBtnCreate = oBtn.cloneNode(true);
       oBtnCreate.setAttribute('id', 'createInfo');
       oBtnCreate.appendChild(document.createTextNode('生成'));
 
+      var oBtnAdd = oBtn.cloneNode(true);
+      oBtnAdd.setAttribute('id', 'addInfo');
+      oBtnAdd.appendChild(document.createTextNode('添加'));
+
       oBtnBox.appendChild(oBtnCreate);
+      oBtnBox.appendChild(oBtnAdd);
       btnGroup.appendChild(oBtnBox);
       oForm.appendChild(btnGroup);
 
@@ -123,7 +128,7 @@
         drawData(oSvg, dataArr);
 
         document.getElementById('svgCont').appendChild(oSvg)
-      };
+      }
     }
   };
 
@@ -131,13 +136,14 @@
   function dataToPath(dataArr){
     var pathData = 'M';
     var pathRotate = 0;
+    var maxData = eval('Math.max(' + dataArr.join(',') + ')');
     for(var i = 0; i < dataArr.length; i++){
       if(i){
         pathData += ' L'
       }
-      pathData += dataArr[i] * 40 * Math.sin( pathRotate/180 * Math.PI );
+      pathData += dataArr[i]/maxData * -200 * Math.sin( pathRotate/180 * Math.PI );
       pathData += ',';
-      pathData += dataArr[i] * -40 * Math.cos( pathRotate/180 * Math.PI );
+      pathData += dataArr[i]/maxData * -200 * Math.cos( pathRotate/180 * Math.PI );
 
       pathRotate += 360 / dataArr.length;
     }
@@ -148,7 +154,7 @@
 
   //创建数据显示
   function drawData(svgObj, svgData){
-    var info = document.createElementNS('http://www.w3.org/2000/svg','path');
+    var info = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     info.setAttribute('stroke-width', '2');
     info.setAttribute('stroke', '#F00');
     info.setAttribute('fill', 'none');
