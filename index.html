@@ -123,13 +123,19 @@
     }
   };
 
+  //用于存放全部数据
+  var dataSave = [];
+  //设置颜色
+  var colorArr = ['#F00', '#0F0', '#00F', '#FF0', '#F0F', '#0FF'];
+
   function createInfo(svg, infoLength, pathCount){
     var dataArr = [];
     //输入判断
     var isNum = true;
     for(var i = 0; i < infoLength; i++){
-      if(Number(document.getElementById('input' + i).value)){
-        dataArr.push(document.getElementById('input' + i).value);
+      var inputVal = parseFloat(document.getElementById('input' + i).value);
+      if(inputVal === +inputVal){
+        dataArr.push(inputVal);
       }else{
         isNum = false;
       }
@@ -137,7 +143,7 @@
     if(document.getElementsByTagName('path')[infoLength + pathCount * 2] == undefined){
       //创建显示数据
       if(isNum){
-        drawData(svg, dataArr);
+        drawData(svg, dataArr, colorArr[pathCount]);
         //大于5则不再显示添加按钮
         if(pathCount < 5){
           document.getElementById('addInfo').style.display = 'inline-block';
@@ -151,7 +157,7 @@
   }
 
   //传入一个数组转换成path值
-  function dataToPath(dataArr){
+  function dataToPath(dataArr, max){
     var pathData = 'M';
     var pathRotate = 0;
     var maxData = eval('Math.max(' + dataArr.join(',') + ')');
@@ -159,9 +165,11 @@
       if(i){
         pathData += ' L'
       }
-      pathData += dataArr[i]/maxData * -200 * Math.sin( pathRotate/180 * Math.PI );
+      //确定使用传入的最大值还是当前数据的最大值
+      var maxScale = max ? max : maxData;
+      pathData += dataArr[i]/maxScale * -200 * Math.sin( pathRotate/180 * Math.PI );
       pathData += ',';
-      pathData += dataArr[i]/maxData * -200 * Math.cos( pathRotate/180 * Math.PI );
+      pathData += dataArr[i]/maxScale * -200 * Math.cos( pathRotate/180 * Math.PI );
 
       pathRotate += 360 / dataArr.length;
     }
@@ -171,21 +179,23 @@
   }
 
   //创建数据显示
-  function drawData(svgObj, svgData){
+  function drawData(svgObj, svgData, color){
     var info = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    info.setAttribute('style', 'transition:500ms');
     info.setAttribute('stroke-width', '2');
-    info.setAttribute('stroke', '#F00');
+    info.setAttribute('stroke', color);
     info.setAttribute('fill', 'none');
 
     var pathData = dataToPath( svgData );
+    dataSave.push(svgData);
     info.setAttribute('d', pathData);
 
     info.setAttribute('transform', 'translate(250 250)');
     svgObj.appendChild(info);
 
     var fillOpacity = info.cloneNode(true);
-    fillOpacity.setAttribute('fill', '#F00');
-    fillOpacity.setAttribute('style', 'opacity:0.3');
+    fillOpacity.setAttribute('fill', color);
+    fillOpacity.setAttribute('style', 'transition:500ms;opacity:0.3');
     svgObj.appendChild(fillOpacity);
 
   }
@@ -194,7 +204,7 @@
   function changeData(data, length, count){
     var pathData = dataToPath(data);
     alert(pathData);
-    for(var i = length; i < length + (count + 1) * 2; i++){
+    for(var i = length + count * 2; i < length + (count + 1) * 2; i++){
       document.getElementsByTagName('path')[i].setAttribute('d', pathData);
     }
   }
