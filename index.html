@@ -28,8 +28,8 @@
   document.getElementById('createSvg').onclick = function(){
     var testText = '肝度,卖弱,安利,撞壁,素质';
     //处理输入数据
-    var infoArr = testText.split(',');
-    //var infoArr = document.getElementById('inputInfo').value.split(',');
+    //var infoArr = testText.split(',');
+    var infoArr = document.getElementById('inputInfo').value.split(',');
     if(infoArr.length < 3){
       alert('输入数据有误，请重新输入')
     }else{
@@ -68,14 +68,19 @@
         oBtnBox = document.createElement('div'),
         oBtn = document.createElement('button');
       btnGroup.className = 'form-group';
-      oBtnBox.setAttribute('class', 'col-sm-offset-2 col-sm-10');
+      oBtnBox.setAttribute('class', 'col-sm-offset-2 col-sm-10 row');
       oBtn.setAttribute('class', 'btn btn-default');
 
       var oBtnCreate = oBtn.cloneNode(true);
       oBtnCreate.setAttribute('id', 'createInfo');
       oBtnCreate.appendChild(document.createTextNode('生成'));
 
+      var oBtnAdd = oBtn.cloneNode(true);
+      oBtnAdd.setAttribute('id', 'addInfo');
+      oBtnAdd.appendChild(document.createTextNode('添加'));
+
       oBtnBox.appendChild(oBtnCreate);
+      oBtnBox.appendChild(oBtnAdd);
       btnGroup.appendChild(oBtnBox);
       oForm.appendChild(btnGroup);
 
@@ -116,14 +121,23 @@
           }
         }*/
         dataArr = [];
+        //输入判断
+        var isNum = 0;
         for(var i = 0; i < INFO_NUM; i++){
-          dataArr.push(document.getElementById('input' + i).value);
+          if(Number(document.getElementById('input' + i).value)){
+            dataArr.push(document.getElementById('input' + i).value);
+          }else{
+            isNum ++;
+          }
         }
         //创建显示数据
-        drawData(oSvg, dataArr);
+        if(isNum){
+          alert('请输入正确的数字');
+        }else{
+          drawData(oSvg, dataArr);
+        }
 
-        document.getElementById('svgCont').appendChild(oSvg)
-      };
+      }
     }
   };
 
@@ -131,13 +145,14 @@
   function dataToPath(dataArr){
     var pathData = 'M';
     var pathRotate = 0;
+    var maxData = eval('Math.max(' + dataArr.join(',') + ')');
     for(var i = 0; i < dataArr.length; i++){
       if(i){
         pathData += ' L'
       }
-      pathData += dataArr[i] * 40 * Math.sin( pathRotate/180 * Math.PI );
+      pathData += dataArr[i]/maxData * -200 * Math.sin( pathRotate/180 * Math.PI );
       pathData += ',';
-      pathData += dataArr[i] * -40 * Math.cos( pathRotate/180 * Math.PI );
+      pathData += dataArr[i]/maxData * -200 * Math.cos( pathRotate/180 * Math.PI );
 
       pathRotate += 360 / dataArr.length;
     }
@@ -148,7 +163,7 @@
 
   //创建数据显示
   function drawData(svgObj, svgData){
-    var info = document.createElementNS('http://www.w3.org/2000/svg','path');
+    var info = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     info.setAttribute('stroke-width', '2');
     info.setAttribute('stroke', '#F00');
     info.setAttribute('fill', 'none');
