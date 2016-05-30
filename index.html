@@ -130,6 +130,7 @@
   //处理最大值
   var tempMax = 0;
 
+  //创建显示数据
   function createInfo(svg, infoLength, pathCount){
     var dataArr = [];
     //输入判断
@@ -146,6 +147,7 @@
       //创建显示数据
       if(isNum){
         drawData(svg, dataArr, colorArr[pathCount]);
+        dataSave.push(dataArr);
         //大于5则不再显示添加按钮
         if(pathCount < 5){
           document.getElementById('addInfo').style.display = 'inline-block';
@@ -155,6 +157,22 @@
       }
     }else{
       changeData(dataArr, infoLength, pathCount)
+    }
+    //处理最大值溢出
+    checkMaxData(infoLength, pathCount)
+  }
+
+  //检查最大值
+  function checkMaxData(length, pathCount){
+    var maxData = eval('Math.max(' + dataSave.join(',') + ')');
+    var switchData = false, count = 0;
+    for(var j = length; j < length + (pathCount + 1) * 2; j++){
+      document.getElementsByTagName('path')[j].setAttribute('d', dataToPath(dataSave[count], maxData));
+      console.log(count);
+      if(switchData){
+        count ++;
+      }
+      switchData = !switchData;
     }
   }
 
@@ -189,8 +207,12 @@
     info.setAttribute('fill', 'none');
 
     var pathData = dataToPath( svgData );
-    dataSave.push(svgData);
-    var pathInit = 'M0,0 L0,0 L0,0 L0,0 L0,0z';
+    //添加数值全为0的path
+    var pathInit = 'M0,0';
+    for(var i = 0; i < svgData.length - 1; i++){
+      pathInit += ' L0,0';
+    }
+    pathInit += 'z';
     info.setAttribute('d', pathInit);
 
     info.setAttribute('transform', 'translate(250 250)');
@@ -200,11 +222,11 @@
     fillOpacity.setAttribute('fill', color);
     fillOpacity.setAttribute('style', 'transition:500ms;opacity:0.3');
     svgObj.appendChild(fillOpacity);
-
+    //初始化动画
     setTimeout(function(){
       info.setAttribute('d', pathData);
       fillOpacity.setAttribute('d', pathData);
-    }, 10)
+    }, 1)
   }
 
   //修改数据
@@ -214,6 +236,7 @@
     for(var i = length + count * 2; i < length + (count + 1) * 2; i++){
       document.getElementsByTagName('path')[i].setAttribute('d', pathData);
     }
+    checkMaxData(length, count)
   }
 </script>
 
