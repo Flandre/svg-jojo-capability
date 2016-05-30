@@ -42,9 +42,9 @@
 
       for(var i = 0; i < infoArr.length; i++){
         var formGroup = document.createElement('div'),
-          oLabel = document.createElement('label'),
-          oInputBox = document.createElement('div'),
-          oInput = document.createElement('input');
+            oLabel = document.createElement('label'),
+            oInputBox = document.createElement('div'),
+            oInput = document.createElement('input');
 
         formGroup.className = 'form-group';
         oLabel.setAttribute('for', 'input' + i);
@@ -77,6 +77,7 @@
 
       var oBtnAdd = oBtn.cloneNode(true);
       oBtnAdd.setAttribute('id', 'addInfo');
+      oBtnAdd.setAttribute('style', 'display:none');
       oBtnAdd.appendChild(document.createTextNode('添加'));
 
       oBtnBox.appendChild(oBtnCreate);
@@ -110,36 +111,44 @@
       document.getElementById('svgCont').appendChild(oSvg);
 
       //生成信息
-      var INFO_NUM = infoArr.length;
-      var abilityArr = [];
-      var dataArr;
+      var infoCount = 0;
       document.getElementById('createInfo').onclick = function(){
-        //清空之前显示的数据
-        /*if(document.getElementsByTagName('path').length > INFO_NUM){
-          for(var i = document.getElementsByTagName('path').length - 1; i >= INFO_NUM ; i--){
-            oSvg.removeChild(document.getElementsByTagName('path')[i]);
-          }
-        }*/
-        dataArr = [];
-        //输入判断
-        var isNum = 0;
-        for(var i = 0; i < INFO_NUM; i++){
-          if(Number(document.getElementById('input' + i).value)){
-            dataArr.push(document.getElementById('input' + i).value);
-          }else{
-            isNum ++;
-          }
-        }
-        //创建显示数据
-        if(isNum){
-          alert('请输入正确的数字');
-        }else{
-          drawData(oSvg, dataArr);
-        }
+        createInfo(oSvg, infoArr.length, infoCount);
+      };
 
+      document.getElementById('addInfo').onclick = function(){
+        infoCount ++;
+        document.getElementById('addInfo').style.display = 'none'
       }
     }
   };
+
+  function createInfo(svg, infoLength, pathCount){
+    var dataArr = [];
+    //输入判断
+    var isNum = true;
+    for(var i = 0; i < infoLength; i++){
+      if(Number(document.getElementById('input' + i).value)){
+        dataArr.push(document.getElementById('input' + i).value);
+      }else{
+        isNum = false;
+      }
+    }
+    if(document.getElementsByTagName('path')[infoLength + pathCount * 2] == undefined){
+      //创建显示数据
+      if(isNum){
+        drawData(svg, dataArr);
+        //大于5则不再显示添加按钮
+        if(pathCount < 5){
+          document.getElementById('addInfo').style.display = 'inline-block';
+        }
+      }else{
+        alert('请输入正确的数字');
+      }
+    }else{
+      changeData(dataArr, infoLength, pathCount)
+    }
+  }
 
   //传入一个数组转换成path值
   function dataToPath(dataArr){
@@ -182,8 +191,12 @@
   }
 
   //修改数据
-  function changeData(){
-
+  function changeData(data, length, count){
+    var pathData = dataToPath(data);
+    alert(pathData);
+    for(var i = length; i < length + (count + 1) * 2; i++){
+      document.getElementsByTagName('path')[i].setAttribute('d', pathData);
+    }
   }
 </script>
 
