@@ -141,10 +141,13 @@
       document.getElementById('createInfo').onclick = function(){
         createInfo(oSvg, infoArr.length, infoCount);
       };
-
+      //添加新的比对元素，并删除输入信息
       document.getElementById('addInfo').onclick = function(){
         infoCount ++;
-        document.getElementById('addInfo').style.display = 'none'
+        document.getElementById('addInfo').style.display = 'none';
+        for(var i = 0; i < infoArr.length; i ++){
+          document.getElementsByTagName('input')[i].value = '';
+        }
       }
     }
   };
