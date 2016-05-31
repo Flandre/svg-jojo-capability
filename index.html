@@ -21,8 +21,7 @@
     </div>
   </div>
 </div>
-<div id="svgCont" style="text-align: center">
-</div>
+<div id="svgCont" style="text-align: center"></div>
 
 <script>
   document.getElementById('createSvg').onclick = function(){
@@ -98,6 +97,24 @@
       scale.setAttribute('stroke-width', '2');
       scale.setAttribute('stroke', '#000');
       scale.setAttribute('d', 'M0,0 L200,0 M20,0 L20,5 M40,0 L40,10 M60,0 L60,5 M80,0 L80,10 M100,0 L100,5 M120,0 L120,10 M140,0 L140,5 M160,0 L160,10 M180,0 L180,5 M200,0 L200,10');
+
+      //绘制文字
+      var infoVal = document.createElementNS('http://www.w3.org/2000/svg','text');
+      infoVal.setAttribute('font-size', '14');
+      infoVal.setAttribute('font-family', 'SimSun');
+      //定位文字信息
+      var infoContainer = [];
+      for(var i = 0; i < infoArr.length; i++){
+        infoContainer[i] = infoVal.cloneNode(true);
+        infoContainer[i].innerHTML = infoArr[i];
+        var oPosition = '';
+        oPosition += 220 * Math.sin( 2/infoArr.length * i * Math.PI ) + 240;
+        oPosition += ' ';
+        oPosition += -220 * Math.cos( 2/infoArr.length * i * Math.PI ) + 255;
+        infoContainer[i].setAttribute('transform', 'translate(' + oPosition + ')');
+        oSvg.appendChild(infoContainer[i]);
+      }
+
 
       //定位刻度
       var svgScaleObjArr = [];
@@ -222,20 +239,13 @@
   }
 
   //修改数据
-  function changeData(data, length, count, max){
-    var pathData;
-    if(max){
-      pathData = dataToPath(data, max);
-    }else{
-      pathData = dataToPath(data);
-    }
+  function changeData(data, length, count){
+    var pathData = dataToPath(data);
     //处理最大值变化
     if(checkMaxData()){
       changeMax(length);
     }else{
-      //alert(pathData);
       for(var i = length + count * 2; i < length + (count + 1) * 2; i++){
-        alert(i);
         document.getElementsByTagName('path')[i].setAttribute('d', pathData);
       }
     }
