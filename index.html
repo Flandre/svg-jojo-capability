@@ -118,7 +118,6 @@
       var numContainer = [];
       for(var i = 0; i < 5; i++){
         numContainer[i] = infoVal.cloneNode(true);
-        numContainer[i].innerHTML = i;
         numContainer[i].setAttribute('id', 'numCont' + i);
         numContainer[i].setAttribute('transform', 'translate(265 ' + (255 - 40 * (i + 1)) + ')');
         oSvg.appendChild(numContainer[i]);
