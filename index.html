@@ -114,6 +114,15 @@
         infoContainer[i].setAttribute('transform', 'translate(' + oPosition + ')');
         oSvg.appendChild(infoContainer[i]);
       }
+      //定位数值信息
+      var numContainer = [];
+      for(var i = 0; i < 5; i++){
+        numContainer[i] = infoVal.cloneNode(true);
+        numContainer[i].innerHTML = i;
+        numContainer[i].setAttribute('id', 'numCont' + i);
+        numContainer[i].setAttribute('transform', 'translate(265 ' + (255 - 40 * (i + 1)) + ')');
+        oSvg.appendChild(numContainer[i]);
+      }
 
 
       //定位刻度
@@ -256,6 +265,10 @@
     var maxData = eval('Math.max(' + dataSave.join(',') + ')');
     if(tempMax == 0){
       tempMax = maxData;
+      //修改最大数值
+      for(var i = 0; i < 5; i++){
+        document.getElementById('numCont' + i).innerHTML = (maxData / 5 * (i + 1)).toFixed(1);
+      }
       return false;
     }else{
       return(maxData != tempMax);
@@ -270,6 +283,10 @@
       var pathData = dataToPath(dataSave[i], maxData);
       document.getElementsByTagName('path')[length + i * 2].setAttribute('d', pathData);
       document.getElementsByTagName('path')[length + i * 2 + 1].setAttribute('d', pathData);
+    }
+    //修改最大数值
+    for(var i = 0; i < 5; i++){
+      document.getElementById('numCont' + i).innerHTML = (maxData / 5 * (i + 1)).toFixed(1);
     }
   }
 </script>
