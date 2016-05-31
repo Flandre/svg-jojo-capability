@@ -21,8 +21,7 @@
     </div>
   </div>
 </div>
-<div id="svgCont" style="text-align: center">
-</div>
+<div id="svgCont" style="text-align: center"></div>
 
 <script>
   document.getElementById('createSvg').onclick = function(){
@@ -99,6 +98,33 @@
       scale.setAttribute('stroke', '#000');
       scale.setAttribute('d', 'M0,0 L200,0 M20,0 L20,5 M40,0 L40,10 M60,0 L60,5 M80,0 L80,10 M100,0 L100,5 M120,0 L120,10 M140,0 L140,5 M160,0 L160,10 M180,0 L180,5 M200,0 L200,10');
 
+      //绘制文字
+      var infoVal = document.createElementNS('http://www.w3.org/2000/svg','text');
+      infoVal.setAttribute('font-size', '14');
+      infoVal.setAttribute('font-family', 'SimSun');
+      //定位文字信息
+      var infoContainer = [];
+      for(var i = 0; i < infoArr.length; i++){
+        infoContainer[i] = infoVal.cloneNode(true);
+        infoContainer[i].innerHTML = infoArr[i];
+        var oPosition = '';
+        oPosition += 220 * Math.sin( 2/infoArr.length * i * Math.PI ) + 240;
+        oPosition += ' ';
+        oPosition += -220 * Math.cos( 2/infoArr.length * i * Math.PI ) + 255;
+        infoContainer[i].setAttribute('transform', 'translate(' + oPosition + ')');
+        oSvg.appendChild(infoContainer[i]);
+      }
+      //定位数值信息
+      var numContainer = [];
+      for(var i = 0; i < 5; i++){
+        numContainer[i] = infoVal.cloneNode(true);
+        numContainer[i].innerHTML = i;
+        numContainer[i].setAttribute('id', 'numCont' + i);
+        numContainer[i].setAttribute('transform', 'translate(265 ' + (255 - 40 * (i + 1)) + ')');
+        oSvg.appendChild(numContainer[i]);
+      }
+
+
       //定位刻度
       var svgScaleObjArr = [];
       var svgScaleRotate = -90;
@@ -115,10 +141,13 @@
       document.getElementById('createInfo').onclick = function(){
         createInfo(oSvg, infoArr.length, infoCount);
       };
-
+      //添加新的比对元素，并删除输入信息
       document.getElementById('addInfo').onclick = function(){
         infoCount ++;
-        document.getElementById('addInfo').style.display = 'none'
+        document.getElementById('addInfo').style.display = 'none';
+        for(var i = 0; i < infoArr.length; i ++){
+          document.getElementsByTagName('input')[i].value = '';
+        }
       }
     }
   };
@@ -127,34 +156,41 @@
   var dataSave = [];
   //设置颜色
   var colorArr = ['#F00', '#0F0', '#00F', '#FF0', '#F0F', '#0FF'];
+  //处理最大值
+  var tempMax = 0;
 
-  function createInfo(svg, infoLength, pathCount){
+  //创建显示数据
+  function createInfo(svg, length, count){
     var dataArr = [];
     //输入判断
     var isNum = true;
-    for(var i = 0; i < infoLength; i++){
+    for(var i = 0; i < length; i++){
       var inputVal = parseFloat(document.getElementById('input' + i).value);
+      //判断数字
       if(inputVal === +inputVal){
         dataArr.push(inputVal);
       }else{
         isNum = false;
       }
     }
-    if(document.getElementsByTagName('path')[infoLength + pathCount * 2] == undefined){
+    if(document.getElementsByTagName('path')[length + count * 2] == undefined){
       //创建显示数据
       if(isNum){
-        drawData(svg, dataArr, colorArr[pathCount]);
+        dataSave.push(dataArr);
+        drawData(svg, length, count, dataArr);
         //大于5则不再显示添加按钮
-        if(pathCount < 5){
+        if(count < 5){
           document.getElementById('addInfo').style.display = 'inline-block';
         }
       }else{
         alert('请输入正确的数字');
       }
     }else{
-      changeData(dataArr, infoLength, pathCount)
+      dataSave[count] = dataArr;
+      changeData(dataArr, length, count)
     }
   }
+
 
   //传入一个数组转换成path值
   function dataToPath(dataArr, max){
@@ -174,38 +210,86 @@
       pathRotate += 360 / dataArr.length;
     }
     pathData += 'z';
-
     return pathData;
   }
 
   //创建数据显示
-  function drawData(svgObj, svgData, color){
+  function drawData(svg, length, count, svgData){
     var info = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     info.setAttribute('style', 'transition:500ms');
     info.setAttribute('stroke-width', '2');
-    info.setAttribute('stroke', color);
+    info.setAttribute('stroke', colorArr[count]);
     info.setAttribute('fill', 'none');
 
-    var pathData = dataToPath( svgData );
-    dataSave.push(svgData);
-    info.setAttribute('d', pathData);
+    //添加数值全为0的path
+    var pathInit = 'M0,0';
+    for(var i = 0; i < svgData.length - 1; i++){
+      pathInit += ' L0,0';
+    }
+    pathInit += 'z';
+    info.setAttribute('d', pathInit);
 
     info.setAttribute('transform', 'translate(250 250)');
-    svgObj.appendChild(info);
+    svg.appendChild(info);
 
     var fillOpacity = info.cloneNode(true);
-    fillOpacity.setAttribute('fill', color);
+    fillOpacity.setAttribute('fill', colorArr[count]);
     fillOpacity.setAttribute('style', 'transition:500ms;opacity:0.3');
-    svgObj.appendChild(fillOpacity);
+    svg.appendChild(fillOpacity);
 
+    //处理最大值变化
+    if(checkMaxData()){
+      setTimeout(function(){
+        changeMax(length);
+      },1)
+    }else{
+      //初始化动画
+      setTimeout(function(){
+        changeData(svgData, length, count)
+      }, 1);
+    }
   }
 
   //修改数据
   function changeData(data, length, count){
     var pathData = dataToPath(data);
-    alert(pathData);
-    for(var i = length + count * 2; i < length + (count + 1) * 2; i++){
-      document.getElementsByTagName('path')[i].setAttribute('d', pathData);
+    //处理最大值变化
+    if(checkMaxData()){
+      changeMax(length);
+    }else{
+      for(var i = length + count * 2; i < length + (count + 1) * 2; i++){
+        document.getElementsByTagName('path')[i].setAttribute('d', pathData);
+      }
+    }
+  }
+
+  //检查最大值变化
+  function checkMaxData(){
+    var maxData = eval('Math.max(' + dataSave.join(',') + ')');
+    if(tempMax == 0){
+      tempMax = maxData;
+      //修改最大数值
+      for(var i = 0; i < 5; i++){
+        document.getElementById('numCont' + i).innerHTML = (maxData / 5 * (i + 1)).toFixed(1);
+      }
+      return false;
+    }else{
+      return(maxData != tempMax);
+    }
+  }
+
+  //处理最大值变化
+  function changeMax(length){
+    var maxData = eval('Math.max(' + dataSave.join(',') + ')');
+    for(var i = 0; i < dataSave.length; i++){
+      console.log('最大值已变化');
+      var pathData = dataToPath(dataSave[i], maxData);
+      document.getElementsByTagName('path')[length + i * 2].setAttribute('d', pathData);
+      document.getElementsByTagName('path')[length + i * 2 + 1].setAttribute('d', pathData);
+    }
+    //修改最大数值
+    for(var i = 0; i < 5; i++){
+      document.getElementById('numCont' + i).innerHTML = (maxData / 5 * (i + 1)).toFixed(1);
     }
   }
 </script>
