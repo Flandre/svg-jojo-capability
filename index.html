@@ -160,23 +160,8 @@
       dataSave[count] = dataArr;
       changeData(dataArr, length, count)
     }
-    //处理最大值溢出
-    //checkMaxData(infoLength, pathCount)
   }
 
-  //检查最大值
-  /*function checkMaxData(length, pathCount){
-    var maxData = eval('Math.max(' + dataSave.join(',') + ')');
-    var switchData = false, count = 0;
-    for(var j = length; j < length + (pathCount + 1) * 2; j++){
-      document.getElementsByTagName('path')[j].setAttribute('d', dataToPath(dataSave[count], maxData));
-      console.log(count);
-      if(switchData){
-        count ++;
-      }
-      switchData = !switchData;
-    }
-  }*/
 
   //传入一个数组转换成path值
   function dataToPath(dataArr, max){
@@ -271,8 +256,10 @@
   function changeMax(length){
     var maxData = eval('Math.max(' + dataSave.join(',') + ')');
     for(var i = 0; i < dataSave.length; i++){
-      console.log('-----------');
-      changeData(dataSave[i], length, dataSave.length, maxData)
+      console.log('最大值已变化');
+      var pathData = dataToPath(dataSave[i], maxData);
+      document.getElementsByTagName('path')[length + i * 2].setAttribute('d', pathData);
+      document.getElementsByTagName('path')[length + i * 2 + 1].setAttribute('d', pathData);
     }
   }
 </script>
