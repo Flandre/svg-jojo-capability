@@ -131,39 +131,41 @@
   var tempMax = 0;
 
   //创建显示数据
-  function createInfo(svg, infoLength, pathCount){
+  function createInfo(svg, length, count){
     var dataArr = [];
     //输入判断
     var isNum = true;
-    for(var i = 0; i < infoLength; i++){
+    for(var i = 0; i < length; i++){
       var inputVal = parseFloat(document.getElementById('input' + i).value);
+      //判断数字
       if(inputVal === +inputVal){
         dataArr.push(inputVal);
       }else{
         isNum = false;
       }
     }
-    if(document.getElementsByTagName('path')[infoLength + pathCount * 2] == undefined){
+    if(document.getElementsByTagName('path')[length + count * 2] == undefined){
       //创建显示数据
       if(isNum){
-        drawData(svg, dataArr, colorArr[pathCount]);
         dataSave.push(dataArr);
+        drawData(svg, length, count, dataArr);
         //大于5则不再显示添加按钮
-        if(pathCount < 5){
+        if(count < 5){
           document.getElementById('addInfo').style.display = 'inline-block';
         }
       }else{
         alert('请输入正确的数字');
       }
     }else{
-      changeData(dataArr, infoLength, pathCount)
+      dataSave[count] = dataArr;
+      changeData(dataArr, length, count)
     }
     //处理最大值溢出
-    checkMaxData(infoLength, pathCount)
+    //checkMaxData(infoLength, pathCount)
   }
 
   //检查最大值
-  function checkMaxData(length, pathCount){
+  /*function checkMaxData(length, pathCount){
     var maxData = eval('Math.max(' + dataSave.join(',') + ')');
     var switchData = false, count = 0;
     for(var j = length; j < length + (pathCount + 1) * 2; j++){
@@ -174,7 +176,7 @@
       }
       switchData = !switchData;
     }
-  }
+  }*/
 
   //传入一个数组转换成path值
   function dataToPath(dataArr, max){
@@ -194,19 +196,17 @@
       pathRotate += 360 / dataArr.length;
     }
     pathData += 'z';
-
     return pathData;
   }
 
   //创建数据显示
-  function drawData(svgObj, svgData, color){
+  function drawData(svg, length, count, svgData){
     var info = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     info.setAttribute('style', 'transition:500ms');
     info.setAttribute('stroke-width', '2');
-    info.setAttribute('stroke', color);
+    info.setAttribute('stroke', colorArr[count]);
     info.setAttribute('fill', 'none');
 
-    var pathData = dataToPath( svgData );
     //添加数值全为0的path
     var pathInit = 'M0,0';
     for(var i = 0; i < svgData.length - 1; i++){
@@ -216,27 +216,64 @@
     info.setAttribute('d', pathInit);
 
     info.setAttribute('transform', 'translate(250 250)');
-    svgObj.appendChild(info);
+    svg.appendChild(info);
 
     var fillOpacity = info.cloneNode(true);
-    fillOpacity.setAttribute('fill', color);
+    fillOpacity.setAttribute('fill', colorArr[count]);
     fillOpacity.setAttribute('style', 'transition:500ms;opacity:0.3');
-    svgObj.appendChild(fillOpacity);
-    //初始化动画
-    setTimeout(function(){
-      info.setAttribute('d', pathData);
-      fillOpacity.setAttribute('d', pathData);
-    }, 1)
+    svg.appendChild(fillOpacity);
+
+    //处理最大值变化
+    if(checkMaxData()){
+      setTimeout(function(){
+        changeMax(length);
+      },1)
+    }else{
+      //初始化动画
+      setTimeout(function(){
+        changeData(svgData, length, count)
+      }, 1);
+    }
   }
 
   //修改数据
-  function changeData(data, length, count){
-    var pathData = dataToPath(data);
-    //alert(pathData);
-    for(var i = length + count * 2; i < length + (count + 1) * 2; i++){
-      document.getElementsByTagName('path')[i].setAttribute('d', pathData);
+  function changeData(data, length, count, max){
+    var pathData;
+    if(max){
+      pathData = dataToPath(data, max);
+    }else{
+      pathData = dataToPath(data);
     }
-    checkMaxData(length, count)
+    //处理最大值变化
+    if(checkMaxData()){
+      changeMax(length);
+    }else{
+      //alert(pathData);
+      for(var i = length + count * 2; i < length + (count + 1) * 2; i++){
+        alert(i);
+        document.getElementsByTagName('path')[i].setAttribute('d', pathData);
+      }
+    }
+  }
+
+  //检查最大值变化
+  function checkMaxData(){
+    var maxData = eval('Math.max(' + dataSave.join(',') + ')');
+    if(tempMax == 0){
+      tempMax = maxData;
+      return false;
+    }else{
+      return(maxData != tempMax);
+    }
+  }
+
+  //处理最大值变化
+  function changeMax(length){
+    var maxData = eval('Math.max(' + dataSave.join(',') + ')');
+    for(var i = 0; i < dataSave.length; i++){
+      console.log('-----------');
+      changeData(dataSave[i], length, dataSave.length, maxData)
+    }
   }
 </script>
 
